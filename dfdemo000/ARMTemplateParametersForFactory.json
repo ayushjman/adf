@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "dfdemo000"
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"GitHub1_credential": {
+			"value": ""
+		},
+		"LS_Blob_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "practiceserver0.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "demo0"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "admin123"
+		},
+		"GitHub1_properties_typeProperties_username": {
+			"value": "ayushjman"
+		}
+	}
+}
