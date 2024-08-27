@@ -43,6 +43,9 @@
 				},
 				{
 					"name": "sort1"
+				},
+				{
+					"name": "select1"
 				}
 			],
 			"scriptLines": [
@@ -97,7 +100,17 @@
 				"     broadcast: 'auto')~> innerJoin",
 				"innerJoin sort(asc(OrderTimestamp, true),",
 				"     caseInsensitive: true) ~> sort1",
-				"sort1 sink(allowSchemaDrift: true,",
+				"sort1 select(mapColumn(",
+				"          CustomerID = trimmedColumns@CustomerID,",
+				"          FirstName,",
+				"          LastName,",
+				"          ProductName,",
+				"          Quantity,",
+				"          Price",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
