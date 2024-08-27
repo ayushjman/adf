@@ -46,6 +46,12 @@
 				},
 				{
 					"name": "select1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "aggregate2"
 				}
 			],
 			"scriptLines": [
@@ -93,7 +99,7 @@
 				"          OrderTimestamp = trim(OrderTimestamp),",
 				"          Price = trim(Price),",
 				"          CustomerID = trim(CustomerID)) ~> derivedColumn1",
-				"trimmedColumns, derivedColumn1 join(trimmedColumns@CustomerID == derivedColumn1@CustomerID,",
+				"aggregate1, aggregate2 join(aggregate1@CustomerID == aggregate2@CustomerID,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -110,6 +116,23 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
+				"trimmedColumns aggregate(groupBy(CustomerID,",
+				"          FirstName,",
+				"          LastName,",
+				"          Email,",
+				"          PhoneNumber,",
+				"          Address,",
+				"          City,",
+				"          State,",
+				"          ZipCode),",
+				"     Country = max(Country)) ~> aggregate1",
+				"derivedColumn1 aggregate(groupBy(OrderID,",
+				"          ProductID,",
+				"          ProductName,",
+				"          Quantity,",
+				"          Price,",
+				"          CustomerID),",
+				"     OrderTimestamp = max(OrderTimestamp)) ~> aggregate2",
 				"select1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
