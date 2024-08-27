@@ -23,6 +23,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_Blob'"
 		},
+		"AzureSqlDatabase3_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase3'"
+		},
 		"AzureSqlDatabase1_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "practiceserver0.database.windows.net"
@@ -50,6 +54,18 @@
 		"GitHub1_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "ayushjman"
+		},
+		"AzureSqlDatabase3_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "practiceserver0.database.windows.net"
+		},
+		"AzureSqlDatabase3_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dbdemo01"
+		},
+		"AzureSqlDatabase3_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "admin123"
 		},
 		"containerUri": {
 			"type": "string",
@@ -90,6 +106,9 @@
 					"LS_Blob_connectionString": {
 						"value": "[parameters('LS_Blob_connectionString')]"
 					},
+					"AzureSqlDatabase3_password": {
+						"value": "[parameters('AzureSqlDatabase3_password')]"
+					},
 					"AzureSqlDatabase1_properties_typeProperties_server": {
 						"value": "[parameters('AzureSqlDatabase1_properties_typeProperties_server')]"
 					},
@@ -110,6 +129,15 @@
 					},
 					"GitHub1_properties_typeProperties_username": {
 						"value": "[parameters('GitHub1_properties_typeProperties_username')]"
+					},
+					"AzureSqlDatabase3_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabase3_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabase3_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabase3_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabase3_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabase3_properties_typeProperties_userName')]"
 					}
 				}
 			},

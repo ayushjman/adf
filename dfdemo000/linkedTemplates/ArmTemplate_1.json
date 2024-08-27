@@ -13,6 +13,33 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText8')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Blob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "orders.csv",
+						"folderPath": "Orders",
+						"container": "consolidated1"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText9')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -100,6 +127,51 @@
 				"typeProperties": {
 					"schema": "raw",
 					"table": "fact"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText11')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Blob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "240826 Superstore.csv",
+						"container": "input2"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable9')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase3",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "raw",
+					"table": "superstore"
 				}
 			},
 			"dependsOn": []
@@ -215,6 +287,12 @@
 						},
 						{
 							"name": "select1"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "aggregate2"
 						}
 					],
 					"scriptLines": [
@@ -262,7 +340,7 @@
 						"          OrderTimestamp = trim(OrderTimestamp),",
 						"          Price = trim(Price),",
 						"          CustomerID = trim(CustomerID)) ~> derivedColumn1",
-						"trimmedColumns, derivedColumn1 join(trimmedColumns@CustomerID == derivedColumn1@CustomerID,",
+						"aggregate1, aggregate2 join(aggregate1@CustomerID == aggregate2@CustomerID,",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
@@ -270,7 +348,6 @@
 						"innerJoin sort(asc(OrderTimestamp, true),",
 						"     caseInsensitive: true) ~> sort1",
 						"sort1 select(mapColumn(",
-						"          CustomerID = trimmedColumns@CustomerID,",
 						"          FirstName,",
 						"          LastName,",
 						"          ProductName,",
@@ -279,6 +356,23 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
+						"trimmedColumns aggregate(groupBy(CustomerID,",
+						"          FirstName,",
+						"          LastName,",
+						"          Email,",
+						"          PhoneNumber,",
+						"          Address,",
+						"          City,",
+						"          State,",
+						"          ZipCode),",
+						"     Country = max(Country)) ~> aggregate1",
+						"derivedColumn1 aggregate(groupBy(OrderID,",
+						"          ProductID,",
+						"          ProductName,",
+						"          Quantity,",
+						"          Price,",
+						"          CustomerID),",
+						"     OrderTimestamp = max(OrderTimestamp)) ~> aggregate2",
 						"select1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -294,6 +388,79 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable8')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/q2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedText11",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable9",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText11')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable9')]"
 			]
 		},
 		{
@@ -857,6 +1024,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Excel2')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText8')]",
 				"[concat(variables('factoryId'), '/datasets/DelimitedText9')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflow2')]"
 			]
