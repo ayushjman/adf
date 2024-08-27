@@ -8,6 +8,9 @@
 		"AzureSqlDatabase1_password": {
 			"value": ""
 		},
+		"AzureSqlDatabase2_password": {
+			"value": ""
+		},
 		"GitHub1_credential": {
 			"value": ""
 		},
@@ -21,6 +24,15 @@
 			"value": "demo0"
 		},
 		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "admin123"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_server": {
+			"value": "practiceserver0.database.windows.net"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_database": {
+			"value": "dbdemo00"
+		},
+		"AzureSqlDatabase2_properties_typeProperties_userName": {
 			"value": "admin123"
 		},
 		"GitHub1_properties_typeProperties_username": {
