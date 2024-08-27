@@ -107,7 +107,6 @@
 				"innerJoin sort(asc(OrderTimestamp, true),",
 				"     caseInsensitive: true) ~> sort1",
 				"sort1 select(mapColumn(",
-				"          CustomerID = trimmedColumns@CustomerID,",
 				"          FirstName,",
 				"          LastName,",
 				"          ProductName,",
