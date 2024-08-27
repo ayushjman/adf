@@ -1,0 +1,113 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable5",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable6",
+						"type": "DatasetReference"
+					},
+					"name": "source2",
+					"description": "Import data from AzureSqlTable6"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable7",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "trimmedColumns",
+					"description": "trimming the columns 'CustomerID, FirstName, LastName, Email, PhoneNumber, Address, City, State, ZipCode, Country'"
+				},
+				{
+					"name": "derivedColumn1",
+					"description": "trimming the columns 'OrderID, ProductID, ProductName, Quantity, OrderTimestamp, Price, CustomerID'"
+				},
+				{
+					"name": "innerJoin"
+				},
+				{
+					"name": "sort1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          CustomerID as string,",
+				"          FirstName as string,",
+				"          LastName as string,",
+				"          Email as string,",
+				"          PhoneNumber as string,",
+				"          Address as string,",
+				"          City as string,",
+				"          State as string,",
+				"          ZipCode as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source(output(",
+				"          OrderID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          OrderTimestamp as string,",
+				"          Price as string,",
+				"          CustomerID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source2",
+				"source1 derive(CustomerID = trim(CustomerID),",
+				"          FirstName = trim(FirstName),",
+				"          LastName = trim(LastName),",
+				"          Email = trim(Email),",
+				"          PhoneNumber = trim(PhoneNumber),",
+				"          Address = trim(Address),",
+				"          City = trim(City),",
+				"          State = trim(State),",
+				"          ZipCode = trim(ZipCode),",
+				"          Country = trim(Country)) ~> trimmedColumns",
+				"source2 derive(ProductName = trim(ProductName),",
+				"          Quantity = trim(Quantity),",
+				"          OrderTimestamp = trim(OrderTimestamp),",
+				"          Price = trim(Price),",
+				"          CustomerID = trim(CustomerID)) ~> derivedColumn1",
+				"trimmedColumns, derivedColumn1 join(trimmedColumns@CustomerID == derivedColumn1@CustomerID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> innerJoin",
+				"innerJoin sort(asc(OrderTimestamp, true),",
+				"     caseInsensitive: true) ~> sort1",
+				"sort1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}
