@@ -23,7 +23,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSqlTable7",
+						"referenceName": "AzureSqlTable8",
 						"type": "DatasetReference"
 					},
 					"name": "sink"
