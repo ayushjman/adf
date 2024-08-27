@@ -10,8 +10,8 @@
 			"encrypt": "mandatory",
 			"trustServerCertificate": false,
 			"authenticationType": "SQL",
-			"userName": "ayushjman",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDhCNTJEQzgwLTRCQkEtNDAxMi05NjU2LTkzNzJGNkJFMDg3M181ZTc4MTE5OC00M2M1LTRhYTYtYjVhYi1mM2M5OWIyNWM0YzgiDQp9"
+			"userName": "admin123",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDhCNTJEQzgwLTRCQkEtNDAxMi05NjU2LTkzNzJGNkJFMDg3M18wNGE0YzhhYS1iZGFhLTRmMmMtYjM1OS02NDdjMTFmOTI0NDAiDQp9"
 		}
 	}
 }
